@@ -311,7 +311,7 @@ class ProjectController{
 
         this._filter._show();
 
-        this._title.getElement().innerHTML = `<h2>${categoryName}</h2>`;
+        this._title.getElement().innerHTML = `${categoryName}`;
     }
 
     _onProjectSelected(event) {
@@ -329,7 +329,7 @@ class ProjectController{
 
         this._viewer._show();
 
-        this._title.getElement().innerHTML = `<h2>${projectName}</h2>`;
+        this._title.getElement().innerHTML = `${projectName}`;
     }
 
     _getCategoriesById(projectId) {
