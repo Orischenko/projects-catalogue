@@ -21,9 +21,9 @@ let defaultCategories = [
     },
     {
         "age": 2,
-        "id": "navy-shipyard-norfolk-va",
+        "id": "technology-projects",
         "imageUrl": "img/projects/navy-shipyard-norfolk-va.jpg",
-        "name": "Navy shipyard, Norfolk, VA"
+        "name": "Technology Projects"
     },
     {
         "age": 3,
@@ -73,7 +73,7 @@ let defaultProjects = [
         "snippet": "As we initially took this project onboard, we were ready for all kinds of issues to pop up and prevent us from completing it on time",
         "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
         "price": "7050",
-        "category": "navy-shipyard-norfolk-va"
+        "category": "technology-projects"
     },
     {
         "age": 3,
@@ -133,7 +133,7 @@ let defaultProjects = [
         "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
         "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
         "price": "9785",
-        "category": "navy-shipyard-norfolk-va"
+        "category": "technology-projects"
     },
     {
         "age": 9,
@@ -193,7 +193,7 @@ let defaultProjects = [
         "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
         "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
         "price": "8700",
-        "category": "navy-shipyard-norfolk-va"
+        "category": "technology-projects"
     },
     {
         "age": 15,
@@ -253,7 +253,7 @@ let defaultProjects = [
         "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
         "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
         "price": "4900",
-        "category": "navy-shipyard-norfolk-va"
+        "category": "technology-projects"
     }
 ];
 
