@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>project categories</title>
+
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/app.css">
+
+    <!--LoDash-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.4/lodash.min.js"></script>
+
+    <script src="js/title.js" defer></script>
+    <script src="js/sorter.js" defer></script>
+    <script src="js/filter.js" defer></script>
+    <script src="js/project-viewer.js" defer></script>
+    <script src="js/project_catalogue.js" defer></script>
+    <script src="js/project-categories.js" defer></script>
+    <script src="js/page.js" defer></script>
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+    <div id="content">
+        <div class="container">
+            <div id="project-catalogue-page">
+                <h2 data-element="project-title">Our Categories</h2>
+                <div class="row">
+                    <!--sidebar-->
+                    <div class="col-lg-5 col-md-12">
+                        <section class="sort_box">
+
+                            <div data-component="filter">
+                                <h5>Search:</h5>
+                                <input type="text" data-element="field">
+                            </div>
+                            <div data-component="sorter">
+                                <h5>Sort by:</h5>
+                                <select data-element="select">
+                                    <option value="priceLow">Price: Low to Heigh</option>
+                                    <option value="priceHeight">Price: Heigh to Low</option>
+                                    <option value="name">Alphabet</option>
+                                    <option value="age">Newest</option>
+                                </select>
+                            </div>
+
+                        </section>
+                    </div>
+                    <!--end sidebar-->
+                    <!--content-->
+                    <div class="col-lg-12">
+                        <section class="primary">
+
+                            <div data-component="projectCategories"></div>
+                            <div data-component="projectCatalogue"></div>
+                            <div class="project-viewer" data-component="projectViewer"></div>
+
+                        </section>
+                    </div>
+                    <!--end content-->
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="js/template" id="project-category-template">
+    <ul class="project-categories">
+        <% category.forEach((project) => { %>
+            <li data-element="projectCategoryContainer" data-project-category-id="<%=project.id%>" data-project-category-name="${project.name}">
+                <figure>
+                    <figcaption>
+                        <h3>
+                            <a href="#!/projects/<%=project.id%>" data-element="projectCategoryLink"><%=project.name%></a>
+                        </h3>
+                    </figcaption>
+                    <img alt="<%=project.name%>" src="<%=project.imageUrl%>"
+                </figure>
+            </li>
+        <% }); %>
+    </ul>
+</script>
+
+<script type="js/template" id="project-catalogue-template">
+    <ul class="projects">
+        <% projects.forEach((project) => { %>
+            <li data-element="projectContainer" data-project-id="<%=project.id%>" data-project-name="${project.name}">
+                <div class="inner-wrapper">
+                    <figure>
+                        <img alt="<%=project.name%>" src="<%=project.imageUrl%>">
+                    </figure>
+                    <h3><a href="#!/projects/<%=project.id%>" data-element="projectlink"><%=project.name%></a></h3>
+                    <h4>Price: <span>&euro;<%=project.price%></span></h4>
+                    <p><%=project.snippet%></p>
+                    <a href="#!/projects/<%=project.id%>" data-element="projectlink" class="permalink">view project</a>
+                </div>
+            </li>
+        <% }); %>
+    </ul>
+</script>
+
+<script type="js/template" id="project-viewer-template">
+    <button>back</button>
+    <div class="single-project">
+        <figure>
+            <img alt="<%=project.name%>" src="<%=project.imageUrl%>">
+        </figure>
+        <div class="row">
+            <div class="col-lg-6 col-md-12">
+                <h4>Price: <span>&euro;<%=project.price%></span></h4>
+                <p><%=project.snippet%></p>
+                <p><%=project.description%></p>
+            </div>
+        </div>
+    </div>
+</script>
+</body>
+</html>
