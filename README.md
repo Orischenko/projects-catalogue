@@ -6,6 +6,6 @@ A one-page application.
 JavaScript
 ES6
 LoDash
-webpack
+Webpack
 
 ```
