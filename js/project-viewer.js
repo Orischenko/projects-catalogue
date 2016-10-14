@@ -1,5 +1,5 @@
 /**
- * Plugin Name: Projects App
+ * Plugin Name: Projects Catalogue
  * Type plugin: single page application
  * Author: Orischenko Alexander
  */

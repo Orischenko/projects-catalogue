@@ -1,10 +1,11 @@
 # Projects Catalogue
 A one-page application.
 
-## To run application
+## Use
 ```
-npm i
+JavaScript
+ES6
+LoDash
 webpack
-node server.js
+
 ```
-open `http://localhost:8080`
