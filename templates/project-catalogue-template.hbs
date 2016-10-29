@@ -1,0 +1,16 @@
+<button class="back-btn">back</button>
+<ul class="projects">
+    {{#each projects}}
+    <li data-element="projectContainer" data-project-id="{{this.id}}" data-project-name="{{{this.name}}}">
+        <div class="inner-wrapper">
+            <figure>
+                <img alt="{{{this.name}}}" src="{{this.imageUrl}}">
+            </figure>
+            <h3><a href="#!/projects/{{this.id}}" data-element="projectlink">{{{this.name}}}</a></h3>
+            <h4>Price: <span>&euro;{{{this.price}}}</span></h4>
+            <p>{{{this.snippet}}}</p>
+            <a href="#!/projects/{{this.id}}" data-element="projectlink" class="permalink">view project</a>
+        </div>
+    </li>
+    {{/each}}
+</ul>

@@ -15,3 +15,5 @@ class ProjectTitle{
         return this._el;
     }
 }
+
+module.exports = ProjectTitle;

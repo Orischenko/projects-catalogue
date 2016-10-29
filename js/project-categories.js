@@ -6,12 +6,10 @@
 
 'use strict';
 
+let compiledTemplate = require('./../templates/project-category-template.hbs');
+
 class ProjectCategories{
     constructor(options) {
-        let template = document.getElementById('project-category-template').innerHTML;
-
-        this._compiledTemplate = _.template(template);
-
         this._el = options.element;
 
         this._render(options.category);
@@ -39,7 +37,7 @@ class ProjectCategories{
     }
 
     _render(category) {
-        this._el.innerHTML = this._compiledTemplate({
+        this._el.innerHTML = compiledTemplate({
             category: category
         });
     }
@@ -56,3 +54,5 @@ class ProjectCategories{
         return this._el;
     }
 }
+
+module.exports = ProjectCategories;

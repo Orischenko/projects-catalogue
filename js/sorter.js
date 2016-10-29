@@ -15,3 +15,5 @@ class Sorter {
         return this._el;
     }
 }
+
+module.exports = Sorter;

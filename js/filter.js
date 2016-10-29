@@ -23,3 +23,5 @@ class Filter {
         return this._el;
     }
 }
+
+module.exports = Filter;

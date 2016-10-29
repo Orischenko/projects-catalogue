@@ -225,6 +225,9 @@ figure img {
 .single-project figure {
   margin: 0 0 33px;
 }
+.single-project .slides {
+  position: relative;
+}
 .back-btn {
   font-size: 0;
   line-height: 0;
@@ -249,4 +252,41 @@ figure img {
 }
 .back-btn:hover {
   color: #0d0d0d;
+}
+.navigations {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  padding: 0 30px;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+}
+.navigations .prev,
+.navigations .next {
+  font-size: 0;
+  line-height: 0;
+  cursor: pointer;
+  color: #00bcd4;
+  -webkit-transition: all .3s ease;
+  -o-transition: all .3s ease;
+  transition: all .3s ease;
+}
+.navigations .prev:before,
+.navigations .next:before {
+  font-family: 'Material Icons';
+  font-size: 50px;
+  line-height: 1em;
+  color: inherit;
+}
+.navigations .prev:hover,
+.navigations .next:hover {
+  color: white;
+}
+.navigations .prev:before {
+  content: "\e5cb";
+}
+.navigations .next:before {
+  content: "\e5cc";
 }

@@ -6,12 +6,10 @@
 
 'use strict';
 
+let compiledTemplate = require('./../templates/project-viewer-template.hbs');
+
 class ProjectViewer{
     constructor(options) {
-        let template = document.getElementById('project-viewer-template').innerHTML;
-
-        this._compiledTemplate = _.template(template);
-
         this._el = options.element;
     }
 
@@ -24,7 +22,7 @@ class ProjectViewer{
     }
 
     _render(project) {
-        this._el.innerHTML = this._compiledTemplate({
+        this._el.innerHTML = compiledTemplate({
             project: project
         });
     }
@@ -33,3 +31,5 @@ class ProjectViewer{
         return this._el;
     }
 }
+
+module.exports = ProjectViewer;

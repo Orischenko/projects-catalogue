@@ -239,6 +239,9 @@ figure {
   figure {
     margin: 0 0 33px;
   }
+  .slides {
+    position: relative;
+  }
 }
 
 .back-btn {
@@ -264,5 +267,44 @@ figure {
   }
   &:hover {
     color: @itemColorSecondary;
+  }
+}
+
+.navigations {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  padding: 0 30px;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  .prev, .next {
+    font-size: 0;
+    line-height: 0;
+    cursor: pointer;
+    color: @itemColorPrimary;
+    -webkit-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    transition: all .3s ease;
+    &:before {
+      font-family: 'Material Icons';
+      font-size: 50px;
+      line-height: 1em;
+      color: inherit;
+    }
+    &:hover {
+      color: white;
+    }
+  }
+  .prev {
+    &:before {
+      content: "\e5cb";
+    }
+  }
+  .next {
+    &:before {
+      content: "\e5cc";
+    }
   }
 }

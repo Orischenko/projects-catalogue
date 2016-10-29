@@ -1,0 +1,14 @@
+<ul class="project-categories">
+    {{#each category}}
+    <li data-element="projectCategoryContainer" data-project-category-id="{{this.id}}" data-project-category-name="{{{this.name}}}">
+        <figure>
+            <figcaption>
+                <h3>
+                    <a href="#!/projects/{{this.id}}" data-element="projectCategoryLink">{{{this.name}}}</a>
+                </h3>
+            </figcaption>
+            <img alt="{{{this.name}}}" src="{{this.imageUrl}}"
+        </figure>
+    </li>
+    {{/each}}
+</ul>

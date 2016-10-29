@@ -5,7 +5,9 @@ A one-page application.
 ```
 JavaScript
 ES6
-LoDash
+JSON
+Handlebars
 Webpack
+Babel
 
 ```

@@ -6,12 +6,10 @@
 
 'use strict';
 
+let compiledTemplate = require('./../templates/project-catalogue-template.hbs');
+
 class ProjectCatalogue {
     constructor(options) {
-        let template = document.getElementById('project-catalogue-template').innerHTML;
-
-        this._compiledTemplate = _.template(template);
-
         this._el = options.element;
 
         this._el.addEventListener('click', this._onProjectSelected.bind(this));
@@ -45,7 +43,7 @@ class ProjectCatalogue {
     }
 
     _render(projects) {
-        this._el.innerHTML = this._compiledTemplate({
+        this._el.innerHTML = compiledTemplate({
             projects: projects
         });
     }
@@ -54,3 +52,4 @@ class ProjectCatalogue {
         return this._el;
     }
 }
+module.exports = ProjectCatalogue;
