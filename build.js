@@ -123,18 +123,27 @@
 	        this._catalogue._getElement().addEventListener('projectSelected', this._onProjectSelected.bind(this));
 	
 	        this._filter._getElement().addEventListener('filterChanged', this._onFilterChanged.bind(this));
+	
+	        this._sorter._getElement().addEventListener('sorterChanged', this._onSelectChanged.bind(this));
 	    }
 	
 	    _createClass(ProjectController, [{
+	        key: '_onSelectChanged',
+	        value: function _onSelectChanged(event) {
+	            var querySort = event.detail;
+	
+	            var categoryId = this._sorter._getElement().dataset.categoryId;
+	
+	            this._getCategoriesById(categoryId, null, querySort);
+	        }
+	    }, {
 	        key: '_onFilterChanged',
 	        value: function _onFilterChanged(event) {
-	            var query = event.detail;
+	            var queryFilter = event.detail;
 	
 	            var categoryId = this._filter._getElement().dataset.categoryId;
 	
-	            this._getCategoriesById(categoryId, query);
-	
-	            console.log(categoryId);
+	            this._getCategoriesById(categoryId, queryFilter);
 	        }
 	    }, {
 	        key: '_onProjectCategorySelected',
@@ -150,6 +159,8 @@
 	            this._title._getElement().innerHTML = '' + categoryName;
 	
 	            this._filter._getElement().setAttribute('data-category-id', '' + categoryId);
+	
+	            this._sorter._getElement().setAttribute('data-category-id', '' + categoryId);
 	        }
 	    }, {
 	        key: '_onProjectSelected',
@@ -168,13 +179,13 @@
 	        }
 	    }, {
 	        key: '_getCategoriesById',
-	        value: function _getCategoriesById(categoryId, query) {
+	        value: function _getCategoriesById(categoryId, queryFilter, querySort) {
 	            var _this = this;
 	
 	            var url = 'data/categories/' + categoryId + '.json';
 	
-	            if (query) {
-	                url += '?query=' + query;
+	            if (queryFilter) {
+	                url += '?queryFilter=' + queryFilter;
 	            }
 	
 	            ajaxService.ajax(url, {
@@ -182,10 +193,20 @@
 	
 	                success: function success(projects) {
 	                    //Todo: server side code
-	                    if (query) {
+	                    if (queryFilter) {
 	                        projects = projects.filter(function (project) {
-	                            return project.name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+	                            return project.name.toLowerCase().indexOf(queryFilter.toLowerCase()) !== -1;
 	                        });
+	                    }
+	
+	                    if (querySort === 'name') {
+	                        projects.sort(_this._sortByName.bind(_this));
+	                    } else if (querySort === 'age') {
+	                        projects.sort(_this._sortByAge.bind(_this));
+	                    } else if (querySort === 'priceLow') {
+	                        projects.sort(_this._sortByPriceLow.bind(_this));
+	                    } else if (querySort === 'priceHeight') {
+	                        projects.sort(_this._sortByPriceHeight.bind(_this));
 	                    }
 	
 	                    _this._catalogue._render(projects);
@@ -235,6 +256,38 @@
 	                    console.error(_error3);
 	                }
 	            });
+	        }
+	    }, {
+	        key: '_sortByName',
+	        value: function _sortByName(a, b) {
+	            var elem1 = a.name,
+	                elem2 = b.name;
+	
+	            return elem1 > elem2 ? 1 : -1;
+	        }
+	    }, {
+	        key: '_sortByAge',
+	        value: function _sortByAge(a, b) {
+	            var elem1 = a.age,
+	                elem2 = b.age;
+	
+	            return elem1 > elem2 ? 1 : -1;
+	        }
+	    }, {
+	        key: '_sortByPriceLow',
+	        value: function _sortByPriceLow(a, b) {
+	            var elem1 = a.price,
+	                elem2 = b.price;
+	
+	            return elem1 > elem2 ? 1 : -1;
+	        }
+	    }, {
+	        key: '_sortByPriceHeight',
+	        value: function _sortByPriceHeight(a, b) {
+	            var elem1 = a.price,
+	                elem2 = b.price;
+	
+	            return elem1 < elem2 ? 1 : -1;
 	        }
 	    }]);
 	
@@ -1831,7 +1884,7 @@
 
 /***/ },
 /* 30 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Plugin Name: Projects Catalogue
@@ -1841,13 +1894,43 @@
 	
 	'use strict';
 	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var Sorter = function Sorter(options) {
-	    _classCallCheck(this, Sorter);
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
-	    this._el = options.element;
-	};
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var BaseComponent = __webpack_require__(4);
+	
+	var Sorter = function (_BaseComponent) {
+	    _inherits(Sorter, _BaseComponent);
+	
+	    function Sorter(options) {
+	        _classCallCheck(this, Sorter);
+	
+	        var _this = _possibleConstructorReturn(this, (Sorter.__proto__ || Object.getPrototypeOf(Sorter)).call(this, options.element));
+	
+	        _this._field = _this._el.querySelector('[data-element="select"]');
+	
+	        _this._field.addEventListener('change', _this._onSelectChange.bind(_this));
+	        return _this;
+	    }
+	
+	    _createClass(Sorter, [{
+	        key: '_onSelectChange',
+	        value: function _onSelectChange() {
+	            var customEvent = new CustomEvent("sorterChanged", {
+	                detail: this._field.value
+	            });
+	
+	            this._el.dispatchEvent(customEvent);
+	        }
+	    }]);
+	
+	    return Sorter;
+	}(BaseComponent);
 	
 	module.exports = Sorter;
 

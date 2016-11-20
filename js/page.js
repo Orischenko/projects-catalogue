@@ -53,14 +53,23 @@ class ProjectController{
         this._catalogue._getElement().addEventListener('projectSelected', this._onProjectSelected.bind(this));
 
         this._filter._getElement().addEventListener('filterChanged', this._onFilterChanged.bind(this));
+
+        this._sorter._getElement().addEventListener('sorterChanged', this._onSelectChanged.bind(this));
     }
 
+    _onSelectChanged(event) {
+        let querySort = event.detail;
+
+        let categoryId = this._sorter._getElement().dataset.categoryId;
+
+        this._getCategoriesById(categoryId, null, querySort);
+    }
     _onFilterChanged(event) {
-        let query = event.detail;
+        let queryFilter = event.detail;
 
         let categoryId = this._filter._getElement().dataset.categoryId;
 
-        this._getCategoriesById(categoryId, query);
+        this._getCategoriesById(categoryId, queryFilter);
     }
 
     _onProjectCategorySelected(event) {
@@ -75,6 +84,8 @@ class ProjectController{
         this._title._getElement().innerHTML = `${categoryName}`;
 
         this._filter._getElement().setAttribute('data-category-id', `${categoryId}`);
+
+        this._sorter._getElement().setAttribute('data-category-id', `${categoryId}`);
     }
 
     _onProjectSelected(event) {
@@ -91,11 +102,11 @@ class ProjectController{
         this._title._getElement().innerHTML = `${projectName}`;
     }
 
-    _getCategoriesById(categoryId, query) {
+    _getCategoriesById(categoryId, queryFilter, querySort) {
         let url = `data/categories/${categoryId}.json`;
 
-        if(query) {
-            url += '?query=' + query;
+        if(queryFilter) {
+            url += '?queryFilter=' + queryFilter;
         }
 
         ajaxService.ajax(url, {
@@ -103,10 +114,23 @@ class ProjectController{
 
             success: (projects) => {
                 //Todo: server side code
-                if(query) {
+                if(queryFilter) {
                     projects = projects.filter((project) => {
-                        return project.name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+                        return project.name.toLowerCase().indexOf(queryFilter.toLowerCase()) !== -1;
                     });
+                }
+
+                if(querySort === 'name') {
+                    projects.sort(this._sortByName.bind(this));
+
+                } else if(querySort === 'age') {
+                    projects.sort(this._sortByAge.bind(this));
+
+                } else if(querySort === 'priceLow') {
+                    projects.sort(this._sortByPriceLow.bind(this));
+
+                } else if(querySort === 'priceHeight') {
+                    projects.sort(this._sortByPriceHeight.bind(this));
                 }
 
                 this._catalogue._render(projects);
@@ -150,6 +174,34 @@ class ProjectController{
                 console.error(error);
             }
         });
+    }
+
+    _sortByName(a,b) {
+        let elem1 = a.name,
+            elem2 = b.name;
+
+        return elem1 > elem2 ? 1 : -1;
+    }
+
+    _sortByAge(a,b) {
+        let elem1 = a.age,
+            elem2 = b.age;
+
+        return elem1 > elem2 ? 1 : -1;
+    }
+
+    _sortByPriceLow(a,b) {
+        let elem1 = a.price,
+            elem2 = b.price;
+
+        return elem1 > elem2 ? 1 : -1;
+    }
+
+    _sortByPriceHeight(a,b) {
+        let elem1 = a.price,
+            elem2 = b.price;
+
+        return elem1 < elem2 ? 1 : -1;
     }
 }
 
