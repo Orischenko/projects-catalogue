@@ -1,0 +1,32 @@
+[
+  {
+    "age": 0,
+    "id": "a-beach-house-in-orlando-florida",
+    "imageUrl": "img/projects/a-beach-house-in-orlando-florida.jpg",
+    "name": "A beach house in Orlando. Florida",
+    "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
+    "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
+    "price": "6180",
+    "category": "healthcare-projects"
+  },
+  {
+    "age": 1,
+    "id": "sicily-inspired-sunny-white-bedroom",
+    "imageUrl": "img/projects/sicily-inspired-sunny-white-bedroom.jpg",
+    "name": "Sicily inspired, sunny white bedroom",
+    "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
+    "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
+    "price": "8750",
+    "category": "healthcare-projects"
+  },
+  {
+    "age": 2,
+    "id": "albuquerque-city-hospital",
+    "imageUrl": "img/projects/albuquerque-city-hospital.jpg",
+    "name": "Albuquerque City Hospital",
+    "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
+    "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
+    "price": "4900",
+    "category": "healthcare-projects"
+  }
+]

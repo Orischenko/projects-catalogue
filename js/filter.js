@@ -6,9 +6,21 @@
 
 'use strict';
 
-class Filter {
+class Filter{
     constructor(options) {
         this._el = options.element;
+
+        this._field = this._el.querySelector('[data-element="field"]');
+
+        this._field.addEventListener('input', this._onFilterChange.bind(this));
+    }
+
+    _onFilterChange() {
+        let customEvent = new CustomEvent('filterChanged', {
+            detail: this._field.value
+        });
+
+        this._el.dispatchEvent(customEvent);
     }
 
     _show() {
@@ -19,7 +31,7 @@ class Filter {
         this._el.parentNode.classList.add('js-hidden');
     }
 
-    getElement() {
+    _getElement() {
         return this._el;
     }
 }

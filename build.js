@@ -74,123 +74,213 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var ProjectCategories = __webpack_require__(2);
-	var ProjectCatalogue = __webpack_require__(23);
-	var ProjectViewer = __webpack_require__(25);
-	var Filter = __webpack_require__(27);
-	var Sorter = __webpack_require__(28);
-	var ProjectTitle = __webpack_require__(29);
-	
-	var defaultCategories = __webpack_require__(30);
-	var defaultProjects = __webpack_require__(31);
+	var ajaxService = __webpack_require__(2),
+	    ProjectCategories = __webpack_require__(3),
+	    ProjectCatalogue = __webpack_require__(25),
+	    ProjectViewer = __webpack_require__(27),
+	    Filter = __webpack_require__(29),
+	    Sorter = __webpack_require__(30),
+	    ProjectTitle = __webpack_require__(31);
 	
 	var ProjectController = function () {
-	        function ProjectController(option) {
-	                _classCallCheck(this, ProjectController);
+	    function ProjectController(option) {
+	        _classCallCheck(this, ProjectController);
 	
-	                this._el = option.element;
+	        this._el = option.element;
 	
-	                this._categories = new ProjectCategories({
-	                        element: this._el.querySelector('[data-component="projectCategories"]'),
-	                        category: defaultCategories
-	                });
+	        this._categories = new ProjectCategories({
+	            element: this._el.querySelector('[data-component="projectCategories"]')
+	        });
 	
-	                this._catalogue = new ProjectCatalogue({
-	                        element: this._el.querySelector('[data-component="projectCatalogue"]'),
-	                        project: defaultProjects
-	                });
+	        this._loadCategories();
 	
-	                this._viewer = new ProjectViewer({
-	                        element: this._el.querySelector('[data-component="projectViewer"]')
-	                });
+	        this._catalogue = new ProjectCatalogue({
+	            element: this._el.querySelector('[data-component="projectCatalogue"]')
+	        });
 	
-	                this._viewer._hide();
+	        this._viewer = new ProjectViewer({
+	            element: this._el.querySelector('[data-component="projectViewer"]')
+	        });
 	
-	                this._filter = new Filter({
-	                        element: this._el.querySelector('[data-component="filter"]')
-	                });
+	        this._viewer._hide();
 	
-	                this._sorter = new Sorter({
-	                        element: this._el.querySelector('[data-component="sorter"]')
-	                });
+	        this._filter = new Filter({
+	            element: this._el.querySelector('[data-component="filter"]')
+	        });
 	
-	                this._title = new ProjectTitle({
-	                        element: this._el.querySelector('[data-element="project-title"]')
-	                });
+	        this._sorter = new Sorter({
+	            element: this._el.querySelector('[data-component="sorter"]')
+	        });
 	
-	                this._filter._hide();
+	        this._title = new ProjectTitle({
+	            element: this._el.querySelector('[data-element="project-title"]')
+	        });
 	
-	                this._categories.getElement().addEventListener('categorySelected', this._onProjectCategorySelected.bind(this));
+	        this._filter._hide();
 	
-	                this._catalogue.getElement().addEventListener('projectSelected', this._onProjectSelected.bind(this));
+	        this._categories._getElement().addEventListener('categorySelected', this._onProjectCategorySelected.bind(this));
+	
+	        this._catalogue._getElement().addEventListener('projectSelected', this._onProjectSelected.bind(this));
+	
+	        this._filter._getElement().addEventListener('filterChanged', this._onFilterChanged.bind(this));
+	    }
+	
+	    _createClass(ProjectController, [{
+	        key: '_onFilterChanged',
+	        value: function _onFilterChanged(event) {
+	            var query = event.detail;
+	
+	            var categoryId = this._filter._getElement().dataset.categoryId;
+	
+	            this._getCategoriesById(categoryId, query);
+	
+	            console.log(categoryId);
 	        }
+	    }, {
+	        key: '_onProjectCategorySelected',
+	        value: function _onProjectCategorySelected(event) {
+	            var categoryId = event.detail.id;
 	
-	        _createClass(ProjectController, [{
-	                key: '_onProjectCategorySelected',
-	                value: function _onProjectCategorySelected(event) {
-	                        var categoryId = event.detail.id;
+	            var categoryName = event.detail.name;
 	
-	                        var categoryName = event.detail.name;
+	            this._getCategoriesById(categoryId);
 	
-	                        var projectDetails = this._getCategoriesById(categoryId);
+	            this._categories._hide();
 	
-	                        this._categories._hide();
+	            this._title._getElement().innerHTML = '' + categoryName;
 	
-	                        this._catalogue._render(projectDetails);
+	            this._filter._getElement().setAttribute('data-category-id', '' + categoryId);
+	        }
+	    }, {
+	        key: '_onProjectSelected',
+	        value: function _onProjectSelected(event) {
+	            var projectId = event.detail.id;
 	
-	                        this._catalogue._show();
+	            var projectName = event.detail.name;
 	
-	                        this._filter._show();
+	            this._getProjectById(projectId);
 	
-	                        this._title.getElement().innerHTML = '' + categoryName;
-	                }
-	        }, {
-	                key: '_onProjectSelected',
-	                value: function _onProjectSelected(event) {
-	                        var projectId = event.detail.id;
+	            this._catalogue._hide();
 	
-	                        var projectName = event.detail.name;
+	            this._filter._hide();
 	
-	                        var projectDetails = this._getProjectById(projectId);
+	            this._title._getElement().innerHTML = '' + projectName;
+	        }
+	    }, {
+	        key: '_getCategoriesById',
+	        value: function _getCategoriesById(categoryId, query) {
+	            var _this = this;
 	
-	                        this._catalogue._hide();
+	            var url = 'data/categories/' + categoryId + '.json';
 	
-	                        this._filter._hide();
+	            if (query) {
+	                url += '?query=' + query;
+	            }
 	
-	                        this._viewer._render(projectDetails);
+	            ajaxService.ajax(url, {
+	                method: 'GET',
 	
-	                        this._viewer._show();
-	
-	                        this._title.getElement().innerHTML = '' + projectName;
-	                }
-	        }, {
-	                key: '_getCategoriesById',
-	                value: function _getCategoriesById(projectId) {
-	                        return defaultProjects.filter(function (project) {
-	                                return project.category === projectId;
+	                success: function success(projects) {
+	                    //Todo: server side code
+	                    if (query) {
+	                        projects = projects.filter(function (project) {
+	                            return project.name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
 	                        });
-	                }
-	        }, {
-	                key: '_getProjectById',
-	                value: function _getProjectById(projectId) {
-	                        return defaultProjects.filter(function (project) {
-	                                return project.id === projectId;
-	                        })[0];
-	                }
-	        }, {
-	                key: 'getElement',
-	                value: function getElement() {
-	                        return this._el;
-	                }
-	        }]);
+	                    }
 	
-	        return ProjectController;
+	                    _this._catalogue._render(projects);
+	
+	                    _this._catalogue._show();
+	
+	                    _this._filter._show();
+	                },
+	
+	                error: function error(_error) {
+	                    console.error(_error);
+	                }
+	            });
+	        }
+	    }, {
+	        key: '_getProjectById',
+	        value: function _getProjectById(projectId) {
+	            var _this2 = this;
+	
+	            ajaxService.ajax('data/single/' + projectId + '.json', {
+	                method: 'GET',
+	
+	                success: function success(project) {
+	                    _this2._viewer._render(project);
+	
+	                    _this2._viewer._show();
+	                },
+	
+	                error: function error(_error2) {
+	                    console.error(_error2);
+	                }
+	            });
+	        }
+	    }, {
+	        key: '_loadCategories',
+	        value: function _loadCategories() {
+	            var _this3 = this;
+	
+	            ajaxService.ajax('data/categories.json', {
+	                method: 'GET',
+	
+	                success: function success(categories) {
+	                    _this3._categories._render(categories);
+	                },
+	
+	                error: function error(_error3) {
+	                    console.error(_error3);
+	                }
+	            });
+	        }
+	    }]);
+	
+	    return ProjectController;
 	}();
 	
 	module.exports = ProjectController;
 
 /***/ },
 /* 2 */
+/***/ function(module, exports) {
+
+	/**
+	 * Plugin Name: Projects Catalogue
+	 * Type plugin: single page application
+	 * Author: Orischenko Alexander
+	 */
+	
+	'use strict';
+	
+	module.exports = {
+	    ajax: function ajax(url, options) {
+	        var xhr = new XMLHttpRequest();
+	
+	        xhr.open(options.method || 'GET', url, true);
+	
+	        xhr.onload = function () {
+	            if (xhr.status != 200) {
+	                options.error(xhr.status + ': ' + xhr.statusText); // 404: Not Found
+	            } else {
+	                var project = JSON.parse(xhr.responseText);
+	
+	                options.success(project);
+	            }
+	        };
+	
+	        xhr.onerror = function () {
+	            options.error(xhr.status + ': ' + xhr.statusText); // 404: Not Found
+	        };
+	
+	        xhr.send();
+	    }
+	};
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -205,17 +295,23 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var compiledTemplate = __webpack_require__(3);
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
-	var ProjectCategories = function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var BaseComponent = __webpack_require__(4),
+	    compiledTemplate = __webpack_require__(5);
+	
+	var ProjectCategories = function (_BaseComponent) {
+	    _inherits(ProjectCategories, _BaseComponent);
+	
 	    function ProjectCategories(options) {
 	        _classCallCheck(this, ProjectCategories);
 	
-	        this._el = options.element;
+	        var _this = _possibleConstructorReturn(this, (ProjectCategories.__proto__ || Object.getPrototypeOf(ProjectCategories)).call(this, options.element));
 	
-	        this._render(options.category);
-	
-	        this._el.addEventListener('click', this._onProjectCategoryLinkClick.bind(this));
+	        _this._el.addEventListener('click', _this._onProjectCategoryLinkClick.bind(_this));
+	        return _this;
 	    }
 	
 	    _createClass(ProjectCategories, [{
@@ -245,7 +341,37 @@
 	                category: category
 	            });
 	        }
-	    }, {
+	    }]);
+	
+	    return ProjectCategories;
+	}(BaseComponent);
+	
+	module.exports = ProjectCategories;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	/**
+	 * Plugin Name: Projects Catalogue
+	 * Type plugin: single page application
+	 * Author: Orischenko Alexander
+	 */
+	
+	'use strict';
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var baseComponent = function () {
+	    function baseComponent(element) {
+	        _classCallCheck(this, baseComponent);
+	
+	        this._el = element;
+	    }
+	
+	    _createClass(baseComponent, [{
 	        key: '_show',
 	        value: function _show() {
 	            this._el.classList.remove('js-hidden');
@@ -256,22 +382,22 @@
 	            this._el.classList.add('js-hidden');
 	        }
 	    }, {
-	        key: 'getElement',
-	        value: function getElement() {
+	        key: '_getElement',
+	        value: function _getElement() {
 	            return this._el;
 	        }
 	    }]);
 	
-	    return ProjectCategories;
+	    return baseComponent;
 	}();
 	
-	module.exports = ProjectCategories;
+	module.exports = baseComponent;
 
 /***/ },
-/* 3 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Handlebars = __webpack_require__(4);
+	var Handlebars = __webpack_require__(6);
 	function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
 	module.exports = (Handlebars["default"] || Handlebars).template({"1":function(container,depth0,helpers,partials,data) {
 	    var stack1, alias1=container.lambda, alias2=container.escapeExpression;
@@ -298,16 +424,16 @@
 	},"useData":true});
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Create a simple path alias to allow browserify to resolve
 	// the runtime on a supported path.
-	module.exports = __webpack_require__(5)['default'];
+	module.exports = __webpack_require__(7)['default'];
 
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -321,30 +447,30 @@
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 	
-	var _handlebarsBase = __webpack_require__(6);
+	var _handlebarsBase = __webpack_require__(8);
 	
 	var base = _interopRequireWildcard(_handlebarsBase);
 	
 	// Each of these augment the Handlebars object. No need to setup here.
 	// (This is done to easily share code between commonjs and browse envs)
 	
-	var _handlebarsSafeString = __webpack_require__(20);
+	var _handlebarsSafeString = __webpack_require__(22);
 	
 	var _handlebarsSafeString2 = _interopRequireDefault(_handlebarsSafeString);
 	
-	var _handlebarsException = __webpack_require__(8);
+	var _handlebarsException = __webpack_require__(10);
 	
 	var _handlebarsException2 = _interopRequireDefault(_handlebarsException);
 	
-	var _handlebarsUtils = __webpack_require__(7);
+	var _handlebarsUtils = __webpack_require__(9);
 	
 	var Utils = _interopRequireWildcard(_handlebarsUtils);
 	
-	var _handlebarsRuntime = __webpack_require__(21);
+	var _handlebarsRuntime = __webpack_require__(23);
 	
 	var runtime = _interopRequireWildcard(_handlebarsRuntime);
 	
-	var _handlebarsNoConflict = __webpack_require__(22);
+	var _handlebarsNoConflict = __webpack_require__(24);
 	
 	var _handlebarsNoConflict2 = _interopRequireDefault(_handlebarsNoConflict);
 	
@@ -379,7 +505,7 @@
 
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -390,17 +516,17 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 	
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 	
 	var _exception2 = _interopRequireDefault(_exception);
 	
-	var _helpers = __webpack_require__(9);
+	var _helpers = __webpack_require__(11);
 	
-	var _decorators = __webpack_require__(17);
+	var _decorators = __webpack_require__(19);
 	
-	var _logger = __webpack_require__(19);
+	var _logger = __webpack_require__(21);
 	
 	var _logger2 = _interopRequireDefault(_logger);
 	
@@ -489,7 +615,7 @@
 
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -619,7 +745,7 @@
 
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -665,7 +791,7 @@
 
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -676,31 +802,31 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _helpersBlockHelperMissing = __webpack_require__(10);
+	var _helpersBlockHelperMissing = __webpack_require__(12);
 	
 	var _helpersBlockHelperMissing2 = _interopRequireDefault(_helpersBlockHelperMissing);
 	
-	var _helpersEach = __webpack_require__(11);
+	var _helpersEach = __webpack_require__(13);
 	
 	var _helpersEach2 = _interopRequireDefault(_helpersEach);
 	
-	var _helpersHelperMissing = __webpack_require__(12);
+	var _helpersHelperMissing = __webpack_require__(14);
 	
 	var _helpersHelperMissing2 = _interopRequireDefault(_helpersHelperMissing);
 	
-	var _helpersIf = __webpack_require__(13);
+	var _helpersIf = __webpack_require__(15);
 	
 	var _helpersIf2 = _interopRequireDefault(_helpersIf);
 	
-	var _helpersLog = __webpack_require__(14);
+	var _helpersLog = __webpack_require__(16);
 	
 	var _helpersLog2 = _interopRequireDefault(_helpersLog);
 	
-	var _helpersLookup = __webpack_require__(15);
+	var _helpersLookup = __webpack_require__(17);
 	
 	var _helpersLookup2 = _interopRequireDefault(_helpersLookup);
 	
-	var _helpersWith = __webpack_require__(16);
+	var _helpersWith = __webpack_require__(18);
 	
 	var _helpersWith2 = _interopRequireDefault(_helpersWith);
 	
@@ -717,14 +843,14 @@
 
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	exports.__esModule = true;
 	
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 	
 	exports['default'] = function (instance) {
 	  instance.registerHelper('blockHelperMissing', function (context, options) {
@@ -762,7 +888,7 @@
 
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -772,9 +898,9 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 	
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 	
 	var _exception2 = _interopRequireDefault(_exception);
 	
@@ -862,7 +988,7 @@
 
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -872,7 +998,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 	
 	var _exception2 = _interopRequireDefault(_exception);
 	
@@ -893,14 +1019,14 @@
 
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	exports.__esModule = true;
 	
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 	
 	exports['default'] = function (instance) {
 	  instance.registerHelper('if', function (conditional, options) {
@@ -928,7 +1054,7 @@
 
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -960,7 +1086,7 @@
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -978,14 +1104,14 @@
 
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	exports.__esModule = true;
 	
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 	
 	exports['default'] = function (instance) {
 	  instance.registerHelper('with', function (context, options) {
@@ -1017,7 +1143,7 @@
 
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1028,7 +1154,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _decoratorsInline = __webpack_require__(18);
+	var _decoratorsInline = __webpack_require__(20);
 	
 	var _decoratorsInline2 = _interopRequireDefault(_decoratorsInline);
 	
@@ -1039,14 +1165,14 @@
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	exports.__esModule = true;
 	
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 	
 	exports['default'] = function (instance) {
 	  instance.registerDecorator('inline', function (fn, props, container, options) {
@@ -1074,14 +1200,14 @@
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	exports.__esModule = true;
 	
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 	
 	var logger = {
 	  methodMap: ['debug', 'info', 'warn', 'error'],
@@ -1127,7 +1253,7 @@
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports) {
 
 	// Build out our basic SafeString type
@@ -1148,7 +1274,7 @@
 
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1168,15 +1294,15 @@
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 	
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 	
 	var Utils = _interopRequireWildcard(_utils);
 	
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 	
 	var _exception2 = _interopRequireDefault(_exception);
 	
-	var _base = __webpack_require__(6);
+	var _base = __webpack_require__(8);
 	
 	function checkRevision(compilerInfo) {
 	  var compilerRevision = compilerInfo && compilerInfo[0] || 1,
@@ -1446,7 +1572,7 @@
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/* global window */
@@ -1473,7 +1599,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1488,15 +1614,23 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var compiledTemplate = __webpack_require__(24);
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
-	var ProjectCatalogue = function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var BaseComponent = __webpack_require__(4),
+	    compiledTemplate = __webpack_require__(26);
+	
+	var ProjectCatalogue = function (_BaseComponent) {
+	    _inherits(ProjectCatalogue, _BaseComponent);
+	
 	    function ProjectCatalogue(options) {
 	        _classCallCheck(this, ProjectCatalogue);
 	
-	        this._el = options.element;
+	        var _this = _possibleConstructorReturn(this, (ProjectCatalogue.__proto__ || Object.getPrototypeOf(ProjectCatalogue)).call(this, options.element));
 	
-	        this._el.addEventListener('click', this._onProjectSelected.bind(this));
+	        _this._el.addEventListener('click', _this._onProjectSelected.bind(_this));
+	        return _this;
 	    }
 	
 	    _createClass(ProjectCatalogue, [{
@@ -1520,39 +1654,24 @@
 	            this._el.dispatchEvent(customEvent);
 	        }
 	    }, {
-	        key: '_show',
-	        value: function _show() {
-	            this._el.classList.remove('js-hidden');
-	        }
-	    }, {
-	        key: '_hide',
-	        value: function _hide() {
-	            this._el.classList.add('js-hidden');
-	        }
-	    }, {
 	        key: '_render',
 	        value: function _render(projects) {
 	            this._el.innerHTML = compiledTemplate({
 	                projects: projects
 	            });
 	        }
-	    }, {
-	        key: 'getElement',
-	        value: function getElement() {
-	            return this._el;
-	        }
 	    }]);
 	
 	    return ProjectCatalogue;
-	}();
+	}(BaseComponent);
 	
 	module.exports = ProjectCatalogue;
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Handlebars = __webpack_require__(4);
+	var Handlebars = __webpack_require__(6);
 	function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
 	module.exports = (Handlebars["default"] || Handlebars).template({"1":function(container,depth0,helpers,partials,data) {
 	    var stack1, alias1=container.lambda, alias2=container.escapeExpression;
@@ -1585,7 +1704,7 @@
 	},"useData":true});
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1600,49 +1719,41 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var compiledTemplate = __webpack_require__(26);
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
-	var ProjectViewer = function () {
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var BaseComponent = __webpack_require__(4),
+	    compiledTemplate = __webpack_require__(28);
+	
+	var ProjectViewer = function (_BaseComponent) {
+	    _inherits(ProjectViewer, _BaseComponent);
+	
 	    function ProjectViewer(options) {
 	        _classCallCheck(this, ProjectViewer);
 	
-	        this._el = options.element;
+	        return _possibleConstructorReturn(this, (ProjectViewer.__proto__ || Object.getPrototypeOf(ProjectViewer)).call(this, options.element));
 	    }
 	
 	    _createClass(ProjectViewer, [{
-	        key: '_show',
-	        value: function _show() {
-	            this._el.classList.remove('js-hidden');
-	        }
-	    }, {
-	        key: '_hide',
-	        value: function _hide() {
-	            this._el.classList.add('js-hidden');
-	        }
-	    }, {
 	        key: '_render',
 	        value: function _render(project) {
 	            this._el.innerHTML = compiledTemplate({
 	                project: project
 	            });
 	        }
-	    }, {
-	        key: 'getElement',
-	        value: function getElement() {
-	            return this._el;
-	        }
 	    }]);
 	
 	    return ProjectViewer;
-	}();
+	}(BaseComponent);
 	
 	module.exports = ProjectViewer;
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Handlebars = __webpack_require__(4);
+	var Handlebars = __webpack_require__(6);
 	function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
 	module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
 	    var stack1, alias1=container.lambda;
@@ -1661,7 +1772,7 @@
 	},"useData":true});
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports) {
 
 	/**
@@ -1681,9 +1792,22 @@
 	        _classCallCheck(this, Filter);
 	
 	        this._el = options.element;
+	
+	        this._field = this._el.querySelector('[data-element="field"]');
+	
+	        this._field.addEventListener('input', this._onFilterChange.bind(this));
 	    }
 	
 	    _createClass(Filter, [{
+	        key: '_onFilterChange',
+	        value: function _onFilterChange() {
+	            var customEvent = new CustomEvent('filterChanged', {
+	                detail: this._field.value
+	            });
+	
+	            this._el.dispatchEvent(customEvent);
+	        }
+	    }, {
 	        key: '_show',
 	        value: function _show() {
 	            this._el.parentNode.classList.remove('js-hidden');
@@ -1694,8 +1818,8 @@
 	            this._el.parentNode.classList.add('js-hidden');
 	        }
 	    }, {
-	        key: 'getElement',
-	        value: function getElement() {
+	        key: '_getElement',
+	        value: function _getElement() {
 	            return this._el;
 	        }
 	    }]);
@@ -1706,7 +1830,7 @@
 	module.exports = Filter;
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports) {
 
 	/**
@@ -1717,32 +1841,19 @@
 	
 	'use strict';
 	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var Sorter = function () {
-	    function Sorter(options) {
-	        _classCallCheck(this, Sorter);
+	var Sorter = function Sorter(options) {
+	    _classCallCheck(this, Sorter);
 	
-	        this._el = options.element;
-	    }
-	
-	    _createClass(Sorter, [{
-	        key: 'getElement',
-	        value: function getElement() {
-	            return this._el;
-	        }
-	    }]);
-	
-	    return Sorter;
-	}();
+	    this._el = options.element;
+	};
 	
 	module.exports = Sorter;
 
 /***/ },
-/* 29 */
-/***/ function(module, exports) {
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Plugin Name: Projects Catalogue
@@ -1752,288 +1863,27 @@
 	
 	'use strict';
 	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var ProjectTitle = function () {
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var BaseComponent = __webpack_require__(4);
+	
+	var ProjectTitle = function (_BaseComponent) {
+	    _inherits(ProjectTitle, _BaseComponent);
+	
 	    function ProjectTitle(options) {
 	        _classCallCheck(this, ProjectTitle);
 	
-	        this._el = options.element;
+	        return _possibleConstructorReturn(this, (ProjectTitle.__proto__ || Object.getPrototypeOf(ProjectTitle)).call(this, options.element));
 	    }
 	
-	    _createClass(ProjectTitle, [{
-	        key: 'getElement',
-	        value: function getElement() {
-	            return this._el;
-	        }
-	    }]);
-	
 	    return ProjectTitle;
-	}();
+	}(BaseComponent);
 	
 	module.exports = ProjectTitle;
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	module.exports = [
-		{
-			"age": 0,
-			"id": "commercial-projects",
-			"imageUrl": "img/projects/yahoo's-data-center.jpg",
-			"name": "Commercial Projects"
-		},
-		{
-			"age": 1,
-			"id": "educational-projects",
-			"imageUrl": "img/projects/chicagoland-recreational-park.jpg",
-			"name": "Educational Projects"
-		},
-		{
-			"age": 2,
-			"id": "technology-projects",
-			"imageUrl": "img/projects/navy-shipyard-norfolk-va.jpg",
-			"name": "Technology Projects"
-		},
-		{
-			"age": 3,
-			"id": "government-projects",
-			"imageUrl": "img/projects/hunting-mansion-in-kentucky.jpg",
-			"name": "Government Projects"
-		},
-		{
-			"age": 4,
-			"id": "healthcare-projects",
-			"imageUrl": "img/projects/a-beach-house-in-orlando-florida.jpg",
-			"name": "Healthcare Projects"
-		},
-		{
-			"age": 5,
-			"id": "industrial-projects",
-			"imageUrl": "img/projects/2-storey-apartment-in-atlanta.jpg",
-			"name": "Industrial Projects"
-		}
-	];
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	module.exports = [
-		{
-			"age": 0,
-			"id": "yahoo's-data-center",
-			"imageUrl": "img/projects/yahoo's-data-center.jpg",
-			"name": "Yahoo's Data Center",
-			"snippet": "While we’ve had a great deal of experience in building IT related buildings, office and data centers before, this project challenged us to the core.",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "5380",
-			"category": "commercial-projects"
-		},
-		{
-			"age": 1,
-			"id": "chicagoland-recreational-park",
-			"imageUrl": "img/projects/chicagoland-recreational-park.jpg",
-			"name": "Chicagoland Recreational Park",
-			"snippet": "One big advantage that Chicago has, is the huge size of its metropolitan area, also known as the “Chicagoland”. Having a population close to 12 million people, this area expands rapidly, and needs diligence in managing…",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "8000",
-			"category": "educational-projects"
-		},
-		{
-			"age": 2,
-			"id": "navy-shipyard-norfolk-va",
-			"imageUrl": "img/projects/navy-shipyard-norfolk-va.jpg",
-			"name": "Navy shipyard, Norfolk, VA",
-			"snippet": "As we initially took this project onboard, we were ready for all kinds of issues to pop up and prevent us from completing it on time",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "7050",
-			"category": "technology-projects"
-		},
-		{
-			"age": 3,
-			"id": "hunting-mansion-in-kentucky",
-			"imageUrl": "img/projects/hunting-mansion-in-kentucky.jpg",
-			"name": "Hunting mansion in Kentucky",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "4999",
-			"category": "government-projects"
-		},
-		{
-			"age": 4,
-			"id": "a-beach-house-in-orlando-florida",
-			"imageUrl": "img/projects/a-beach-house-in-orlando-florida.jpg",
-			"name": "A beach house in Orlando. Florida",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "6180",
-			"category": "healthcare-projects"
-		},
-		{
-			"age": 5,
-			"id": "2-storey-apartment-in-atlanta",
-			"imageUrl": "img/projects/2-storey-apartment-in-atlanta.jpg",
-			"name": "2-storey apartment in Atlanta",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "3400",
-			"category": "industrial-projects"
-		},
-		{
-			"age": 6,
-			"id": "erie-lakeside-house-mi",
-			"imageUrl": "img/projects/erie-lakeside-house-mi.jpg",
-			"name": "Erie Lakeside house, MI",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "4550",
-			"category": "commercial-projects"
-		},
-		{
-			"age": 7,
-			"id": "art-decor-styled-dining-hall",
-			"imageUrl": "img/projects/art-decor-styled-dining-hall.jpg",
-			"name": "Art decor styled dining hall",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "5650",
-			"category": "educational-projects"
-		},
-		{
-			"age": 8,
-			"id": "italian-inspired-living-room",
-			"imageUrl": "img/projects/italian-inspired-living-room.jpg",
-			"name": "Italian inspired living room",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "9785",
-			"category": "technology-projects"
-		},
-		{
-			"age": 9,
-			"id": "oyster-grey-mediterranean-styled-kitchen",
-			"imageUrl": "img/projects/oyster-grey-mediterranean-styled-kitchen.jpg",
-			"name": "Oyster-grey Mediterranean styled kitchen",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "3780",
-			"category": "government-projects"
-		},
-		{
-			"age": 10,
-			"id": "sicily-inspired-sunny-white-bedroom",
-			"imageUrl": "img/projects/sicily-inspired-sunny-white-bedroom.jpg",
-			"name": "Sicily inspired, sunny white bedroom",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "8750",
-			"category": "healthcare-projects"
-		},
-		{
-			"age": 11,
-			"id": "white-welsh-style-for-a-living-room",
-			"imageUrl": "img/projects/white-welsh-style-for-a-living-room.jpg",
-			"name": "White Welsh style for a living room",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "6350",
-			"category": "industrial-projects"
-		},
-		{
-			"age": 12,
-			"id": "scottish-blue-and-yellow-dining-hall",
-			"imageUrl": "img/projects/scottish-blue-and-yellow-dining-hall.jpg",
-			"name": "Scottish, blue and yellow dining hall",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "9500",
-			"category": "commercial-projects"
-		},
-		{
-			"age": 13,
-			"id": "a-new-townhouse-in-the-appalachian-mountains",
-			"imageUrl": "img/projects/a-new-townhouse-in-the-appalachian-mountains.jpg",
-			"name": "A new townhouse in the Appalachian mountains",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "7640",
-			"category": "educational-projects"
-		},
-		{
-			"age": 14,
-			"id": "a-beach-house-at-baja-california-peninsula",
-			"imageUrl": "img/projects/a-beach-house-at-baja-california-peninsula.jpg",
-			"name": "A beach house at Baja California peninsula",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "8700",
-			"category": "technology-projects"
-		},
-		{
-			"age": 15,
-			"id": "small-cottage-in-upper-new-york",
-			"imageUrl": "img/projects/small-cottage-in-upper-new-york.jpg",
-			"name": "Small cottage in Upper New York",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "8650",
-			"category": "government-projects"
-		},
-		{
-			"age": 16,
-			"id": "albuquerque-city-hospital",
-			"imageUrl": "img/projects/albuquerque-city-hospital.jpg",
-			"name": "Albuquerque City Hospital",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "4900",
-			"category": "healthcare-projects"
-		},
-		{
-			"age": 17,
-			"id": "new-townhouse-in-st-louis-missouri",
-			"imageUrl": "img/projects/new-townhouse-in-st-louis-missouri.jpg",
-			"name": "New townhouse in St. Louis, Missouri",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "3950",
-			"category": "industrial-projects"
-		},
-		{
-			"age": 18,
-			"id": "3-storey-apartment-in-cleveland-ohio",
-			"imageUrl": "img/projects/3-storey-apartment-in-cleveland-ohio.jpg",
-			"name": "3-storey apartment in Cleveland, Ohio",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "9350",
-			"category": "commercial-projects"
-		},
-		{
-			"age": 19,
-			"id": "a-modernist-palladian-villa",
-			"imageUrl": "img/projects/a-modernist-palladian-villa.jpg",
-			"name": "A modernist Palladian villa",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "7890",
-			"category": "educational-projects"
-		},
-		{
-			"age": 20,
-			"id": "ave-balboa-office",
-			"imageUrl": "img/projects/ave-balboa-office.jpg",
-			"name": "Ave Balboa Office",
-			"snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
-			"description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
-			"price": "4900",
-			"category": "technology-projects"
-		}
-	];
 
 /***/ }
 /******/ ]);

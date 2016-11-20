@@ -6,6 +6,7 @@ A one-page application.
 JavaScript
 ES6
 JSON
+AJAX
 Handlebars
 Webpack
 Babel

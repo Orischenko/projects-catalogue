@@ -1,0 +1,42 @@
+[
+  {
+    "age": 0,
+    "id": "chicagoland-recreational-park",
+    "imageUrl": "img/projects/chicagoland-recreational-park.jpg",
+    "name": "Chicagoland Recreational Park",
+    "snippet": "One big advantage that Chicago has, is the huge size of its metropolitan area, also known as the “Chicagoland”. Having a population close to 12 million people, this area expands rapidly, and needs diligence in managing…",
+    "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
+    "price": "8000",
+    "category": "educational-projects"
+  },
+  {
+    "age": 1,
+    "id": "art-decor-styled-dining-hall",
+    "imageUrl": "img/projects/art-decor-styled-dining-hall.jpg",
+    "name": "Art decor styled dining hall",
+    "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
+    "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
+    "price": "5650",
+    "category": "educational-projects"
+  },
+  {
+    "age": 2,
+    "id": "a-new-townhouse-in-the-appalachian-mountains",
+    "imageUrl": "img/projects/a-new-townhouse-in-the-appalachian-mountains.jpg",
+    "name": "A new townhouse in the Appalachian mountains",
+    "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
+    "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
+    "price": "7640",
+    "category": "educational-projects"
+  },
+  {
+    "age": 3,
+    "id": "a-modernist-palladian-villa",
+    "imageUrl": "img/projects/a-modernist-palladian-villa.jpg",
+    "name": "A modernist Palladian villa",
+    "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
+    "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
+    "price": "7890",
+    "category": "educational-projects"
+  }
+]

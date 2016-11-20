@@ -1,0 +1,32 @@
+[
+  {
+    "age": 0,
+    "id": "hunting-mansion-in-kentucky",
+    "imageUrl": "img/projects/hunting-mansion-in-kentucky.jpg",
+    "name": "Hunting mansion in Kentucky",
+    "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
+    "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
+    "price": "4999",
+    "category": "government-projects"
+  },
+  {
+    "age": 1,
+    "id": "oyster-grey-mediterranean-styled-kitchen",
+    "imageUrl": "img/projects/oyster-grey-mediterranean-styled-kitchen.jpg",
+    "name": "Oyster-grey Mediterranean styled kitchen",
+    "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
+    "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
+    "price": "3780",
+    "category": "government-projects"
+  },
+  {
+    "age": 2,
+    "id": "small-cottage-in-upper-new-york",
+    "imageUrl": "img/projects/small-cottage-in-upper-new-york.jpg",
+    "name": "Small cottage in Upper New York",
+    "snippet": "Enjoy a refreshing time amidst the monumental Appalachian mountains, in a townhouse that will host the most luxurious holiday for you and your family!",
+    "description": "This home has been updated and is neat and clean. Open concept floor plan. Large deck perfect for entertaining. Easy to get to. 50 ft of frontage with a concrete seawall to ensure you maintain your property over the years. Large living areas for entertaining year round. If you have wanted to live on the lake, don't let this gem pass you by without taking a look. All measurements are approximate, BATVAI. Bring your offers, and start your summer right. Immediate occupancy so you can move right in. Motivated seller.",
+    "price": "8650",
+    "category": "government-projects"
+  }
+]

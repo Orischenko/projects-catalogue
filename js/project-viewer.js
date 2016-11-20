@@ -6,29 +6,18 @@
 
 'use strict';
 
-let compiledTemplate = require('./../templates/project-viewer-template.hbs');
+let BaseComponent = require('./baseComponent'),
+    compiledTemplate = require('./../templates/project-viewer-template.hbs');
 
-class ProjectViewer{
+class ProjectViewer extends BaseComponent{
     constructor(options) {
-        this._el = options.element;
-    }
-
-    _show() {
-        this._el.classList.remove('js-hidden');
-    }
-
-    _hide() {
-        this._el.classList.add('js-hidden');
+        super(options.element);
     }
 
     _render(project) {
         this._el.innerHTML = compiledTemplate({
             project: project
         });
-    }
-
-    getElement() {
-        return this._el;
     }
 }
 

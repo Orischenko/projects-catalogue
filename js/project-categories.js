@@ -6,13 +6,12 @@
 
 'use strict';
 
-let compiledTemplate = require('./../templates/project-category-template.hbs');
+let BaseComponent = require('./baseComponent'),
+    compiledTemplate = require('./../templates/project-category-template.hbs');
 
-class ProjectCategories{
+class ProjectCategories extends BaseComponent{
     constructor(options) {
-        this._el = options.element;
-
-        this._render(options.category);
+        super(options.element);
 
         this._el.addEventListener('click', this._onProjectCategoryLinkClick.bind(this));
     }
@@ -40,18 +39,6 @@ class ProjectCategories{
         this._el.innerHTML = compiledTemplate({
             category: category
         });
-    }
-
-    _show() {
-        this._el.classList.remove('js-hidden');
-    }
-
-    _hide() {
-        this._el.classList.add('js-hidden');
-    }
-
-    getElement() {
-        return this._el;
     }
 }
 

@@ -6,7 +6,7 @@
 
 'use strict';
 
-let ProjectController = require('./page.js');
+let ProjectController = require('./page');
 
 let page = new ProjectController({
     element: document.getElementById('project-catalogue-page')

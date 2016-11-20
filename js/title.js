@@ -6,13 +6,11 @@
 
 'use strict';
 
-class ProjectTitle{
-    constructor(options) {
-        this._el = options.element;
-    }
+let BaseComponent = require('./baseComponent');
 
-    getElement() {
-        return this._el;
+class ProjectTitle extends BaseComponent{
+    constructor(options) {
+        super(options.element);
     }
 }
 
