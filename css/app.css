@@ -222,11 +222,26 @@ figure img {
   padding: 0;
   box-sizing: border-box;
 }
-.single-project figure {
-  margin: 0 0 33px;
+.single-project ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.single-project ul li {
+  float: left;
+}
+.single-project ul li img {
+  width: 100%;
 }
 .single-project .slides {
   position: relative;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+.single-project .slides .carousel {
+  -webkit-transition: all 0.8s ease;
+  -o-transition: all 0.8s ease;
+  transition: all 0.8s ease;
 }
 .back-btn {
   font-size: 0;

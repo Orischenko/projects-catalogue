@@ -113,7 +113,6 @@ class ProjectController{
             method: 'GET',
 
             success: (projects) => {
-                //Todo: server side code
                 if(queryFilter) {
                     projects = projects.filter((project) => {
                         return project.name.toLowerCase().indexOf(queryFilter.toLowerCase()) !== -1;
@@ -154,6 +153,8 @@ class ProjectController{
                 this._viewer._render(project);
 
                 this._viewer._show();
+
+                this._viewer._loadCarousel();
             },
 
             error: (error) => {

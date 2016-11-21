@@ -236,11 +236,26 @@ figure {
 }
 
 .single-project {
-  figure {
-    margin: 0 0 33px;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li {
+      float: left;
+      img {
+        width: 100%;
+      }
+    }
   }
   .slides {
     position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+    .carousel {
+      -webkit-transition: all 0.8s ease;
+      -o-transition: all 0.8s ease;
+      transition: all 0.8s ease;
+    }
   }
 }
 

@@ -192,7 +192,6 @@
 	                method: 'GET',
 	
 	                success: function success(projects) {
-	                    //Todo: server side code
 	                    if (queryFilter) {
 	                        projects = projects.filter(function (project) {
 	                            return project.name.toLowerCase().indexOf(queryFilter.toLowerCase()) !== -1;
@@ -233,6 +232,8 @@
 	                    _this2._viewer._render(project);
 	
 	                    _this2._viewer._show();
+	
+	                    _this2._viewer._loadCarousel();
 	                },
 	
 	                error: function error(_error2) {
@@ -1795,6 +1796,56 @@
 	                project: project
 	            });
 	        }
+	    }, {
+	        key: '_defaultsCarouselData',
+	        value: function _defaultsCarouselData() {
+	            var defaults = {
+	                slides: this._el.querySelector('[data-element="slides"]'),
+	                carousel: this._el.querySelector('[data-element="carousel"]'),
+	                itemWidth: this._el.querySelector('[data-element="slides"]').clientWidth,
+	                items: Array.prototype.slice.call(this._el.querySelectorAll('li')),
+	                navigation: this._el.querySelector('[data-element="navigations"]')
+	            };
+	
+	            return defaults;
+	        }
+	    }, {
+	        key: '_setCarouselItemWidth',
+	        value: function _setCarouselItemWidth() {
+	            var _this2 = this;
+	
+	            this._defaultsCarouselData().items.forEach(function (item) {
+	                item.style.width = _this2._defaultsCarouselData().slides.clientWidth + 'px';
+	            });
+	
+	            this._defaultsCarouselData().carousel.style.width = this._defaultsCarouselData().items.length * this._defaultsCarouselData().itemWidth + 'px';
+	        }
+	    }, {
+	        key: '_setNavigation',
+	        value: function _setNavigation() {
+	            var _this3 = this;
+	
+	            var positionX = 0;
+	
+	            this._defaultsCarouselData().navigation.addEventListener('click', function (event) {
+	                if (event.target.closest('[data-element="navNext"]')) {
+	                    positionX = Math.max(positionX - _this3._defaultsCarouselData().itemWidth * 1, -_this3._defaultsCarouselData().itemWidth * (_this3._defaultsCarouselData().items.length - 1));
+	
+	                    _this3._defaultsCarouselData().carousel.style.marginLeft = positionX + 'px';
+	                } else if (event.target.closest('[data-element="navPrev"]')) {
+	                    positionX = Math.min(positionX + (_this3._defaultsCarouselData().itemWidth + 0) * 1, 0);
+	
+	                    _this3._defaultsCarouselData().carousel.style.marginLeft = positionX + 'px';
+	                }
+	            });
+	        }
+	    }, {
+	        key: '_loadCarousel',
+	        value: function _loadCarousel() {
+	            this._setCarouselItemWidth();
+	
+	            this._setNavigation();
+	        }
 	    }]);
 	
 	    return ProjectViewer;
@@ -1808,14 +1859,16 @@
 
 	var Handlebars = __webpack_require__(6);
 	function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
-	module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+	module.exports = (Handlebars["default"] || Handlebars).template({"1":function(container,depth0,helpers,partials,data) {
+	    return "                <li><img src=\""
+	    + container.escapeExpression(container.lambda(depth0, depth0))
+	    + "\"></li>\r\n";
+	},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
 	    var stack1, alias1=container.lambda;
 	
-	  return "<button class=\"back-btn\">back</button>\r\n<div class=\"single-project\">\r\n    <div class=\"slides\">\r\n        <figure>\r\n            <img alt=\""
-	    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.project : depth0)) != null ? stack1.name : stack1), depth0)) != null ? stack1 : "")
-	    + "\" src=\""
-	    + container.escapeExpression(alias1(((stack1 = (depth0 != null ? depth0.project : depth0)) != null ? stack1.imageUrl : stack1), depth0))
-	    + "\">\r\n        </figure>\r\n        <div class=\"navigations\">\r\n            <span class=\"prev\">prev</span>\r\n            <span class=\"next\">next</span>\r\n        </div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-lg-6 col-md-12\">\r\n            <h4>Price: <span>&euro;"
+	  return "<button class=\"back-btn\">back</button>\r\n<div class=\"single-project\">\r\n    <div class=\"slides\" data-element=\"slides\">\r\n        <ul class=\"carousel\" data-element=\"carousel\">\r\n"
+	    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},((stack1 = (depth0 != null ? depth0.project : depth0)) != null ? stack1.images : stack1),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+	    + "        </ul>\r\n        <div class=\"navigations\" data-element=\"navigations\">\r\n            <span class=\"prev\" data-element=\"navPrev\">prev</span>\r\n            <span class=\"next\" data-element=\"navNext\">next</span>\r\n        </div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-lg-6 col-md-12\">\r\n            <h4>Price: <span>&euro;"
 	    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.project : depth0)) != null ? stack1.price : stack1), depth0)) != null ? stack1 : "")
 	    + "</span></h4>\r\n            <p>"
 	    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.project : depth0)) != null ? stack1.snippet : stack1), depth0)) != null ? stack1 : "")

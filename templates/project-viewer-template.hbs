@@ -1,12 +1,14 @@
 <button class="back-btn">back</button>
 <div class="single-project">
-    <div class="slides">
-        <figure>
-            <img alt="{{{project.name}}}" src="{{project.imageUrl}}">
-        </figure>
-        <div class="navigations">
-            <span class="prev">prev</span>
-            <span class="next">next</span>
+    <div class="slides" data-element="slides">
+        <ul class="carousel" data-element="carousel">
+            {{#each project.images}}
+                <li><img src="{{this}}"></li>
+            {{/each}}
+        </ul>
+        <div class="navigations" data-element="navigations">
+            <span class="prev" data-element="navPrev">prev</span>
+            <span class="next" data-element="navNext">next</span>
         </div>
     </div>
     <div class="row">
