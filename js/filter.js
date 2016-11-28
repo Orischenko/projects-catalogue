@@ -23,6 +23,10 @@ class Filter{
         this._el.dispatchEvent(customEvent);
     }
 
+    _getField() {
+        return this._field;
+    }
+
     _show() {
         this._el.parentNode.classList.remove('js-hidden');
     }

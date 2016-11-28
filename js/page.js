@@ -70,6 +70,7 @@ class ProjectController{
     _onBackFromCatalogue() {
         this._catalogue._hide();
         this._filter._hide();
+        this._filter._getField().value = '';
         this._categories._show();
         this._title._getElement().innerHTML = 'Our Categories';
     }

@@ -143,6 +143,7 @@
 	        value: function _onBackFromCatalogue() {
 	            this._catalogue._hide();
 	            this._filter._hide();
+	            this._filter._getField().value = '';
 	            this._categories._show();
 	            this._title._getElement().innerHTML = 'Our Categories';
 	        }
@@ -1950,6 +1951,11 @@
 	            });
 	
 	            this._el.dispatchEvent(customEvent);
+	        }
+	    }, {
+	        key: '_getField',
+	        value: function _getField() {
+	            return this._field;
 	        }
 	    }, {
 	        key: '_show',
