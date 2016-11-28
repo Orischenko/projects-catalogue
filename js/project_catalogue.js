@@ -14,12 +14,12 @@ class ProjectCatalogue extends BaseComponent{
         super(options.element);
 
         this._el.addEventListener('click', this._onProjectSelected.bind(this));
+
+        this._el.addEventListener('click', this._onBackButtonClick.bind(this));
     }
 
     _onProjectSelected(event) {
-        if(!event.target.closest('[data-element="projectlink"]')) {
-            return;
-        }
+        if(!event.target.closest('[data-element="projectlink"]')) return;
 
         event.preventDefault();
 
@@ -39,6 +39,14 @@ class ProjectCatalogue extends BaseComponent{
         this._el.innerHTML = compiledTemplate({
             projects: projects
         });
+    }
+
+    _onBackButtonClick(event) {
+        if(!event.target.closest('[data-element="backButton"]')) return;
+
+        let customEvent = new CustomEvent('back');
+
+        this._el.dispatchEvent(customEvent);
     }
 }
 module.exports = ProjectCatalogue;

@@ -12,6 +12,8 @@ let BaseComponent = require('./baseComponent'),
 class ProjectViewer extends BaseComponent{
     constructor(options) {
         super(options.element);
+
+        this._el.addEventListener('click', this._onBackButtonClick.bind(this));
     }
 
     _render(project) {
@@ -61,6 +63,14 @@ class ProjectViewer extends BaseComponent{
         this._setCarouselItemWidth();
 
         this._setNavigation();
+    }
+
+    _onBackButtonClick(event) {
+        if(!event.target.closest('[data-element="backButton"]')) return;
+
+        let customEvent = new CustomEvent('back');
+
+        this._el.dispatchEvent(customEvent);
     }
 }
 

@@ -17,9 +17,7 @@ class ProjectCategories extends BaseComponent{
     }
 
     _onProjectCategoryLinkClick(event) {
-        if(!event.target.closest('[data-element="projectCategoryLink"]')) {
-            return;
-        }
+        if(!event.target.closest('[data-element="projectCategoryLink"]')) return;
 
         event.preventDefault();
 

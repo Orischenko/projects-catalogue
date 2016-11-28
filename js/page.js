@@ -55,6 +55,23 @@ class ProjectController{
         this._filter._getElement().addEventListener('filterChanged', this._onFilterChanged.bind(this));
 
         this._sorter._getElement().addEventListener('sorterChanged', this._onSelectChanged.bind(this));
+
+        this._viewer._getElement().addEventListener('back', this._onBackFromViewer.bind(this));
+
+        this._catalogue._getElement().addEventListener('back', this._onBackFromCatalogue.bind(this));
+    }
+
+    _onBackFromViewer() {
+        this._viewer._hide();
+        this._catalogue._show();
+        this._filter._show();
+    }
+
+    _onBackFromCatalogue() {
+        this._catalogue._hide();
+        this._filter._hide();
+        this._categories._show();
+        this._title._getElement().innerHTML = 'Our Categories';
     }
 
     _onSelectChanged(event) {

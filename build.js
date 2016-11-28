@@ -125,9 +125,28 @@
 	        this._filter._getElement().addEventListener('filterChanged', this._onFilterChanged.bind(this));
 	
 	        this._sorter._getElement().addEventListener('sorterChanged', this._onSelectChanged.bind(this));
+	
+	        this._viewer._getElement().addEventListener('back', this._onBackFromViewer.bind(this));
+	
+	        this._catalogue._getElement().addEventListener('back', this._onBackFromCatalogue.bind(this));
 	    }
 	
 	    _createClass(ProjectController, [{
+	        key: '_onBackFromViewer',
+	        value: function _onBackFromViewer() {
+	            this._viewer._hide();
+	            this._catalogue._show();
+	            this._filter._show();
+	        }
+	    }, {
+	        key: '_onBackFromCatalogue',
+	        value: function _onBackFromCatalogue() {
+	            this._catalogue._hide();
+	            this._filter._hide();
+	            this._categories._show();
+	            this._title._getElement().innerHTML = 'Our Categories';
+	        }
+	    }, {
 	        key: '_onSelectChanged',
 	        value: function _onSelectChanged(event) {
 	            var querySort = event.detail;
@@ -371,9 +390,7 @@
 	    _createClass(ProjectCategories, [{
 	        key: '_onProjectCategoryLinkClick',
 	        value: function _onProjectCategoryLinkClick(event) {
-	            if (!event.target.closest('[data-element="projectCategoryLink"]')) {
-	                return;
-	            }
+	            if (!event.target.closest('[data-element="projectCategoryLink"]')) return;
 	
 	            event.preventDefault();
 	
@@ -1684,15 +1701,15 @@
 	        var _this = _possibleConstructorReturn(this, (ProjectCatalogue.__proto__ || Object.getPrototypeOf(ProjectCatalogue)).call(this, options.element));
 	
 	        _this._el.addEventListener('click', _this._onProjectSelected.bind(_this));
+	
+	        _this._el.addEventListener('click', _this._onBackButtonClick.bind(_this));
 	        return _this;
 	    }
 	
 	    _createClass(ProjectCatalogue, [{
 	        key: '_onProjectSelected',
 	        value: function _onProjectSelected(event) {
-	            if (!event.target.closest('[data-element="projectlink"]')) {
-	                return;
-	            }
+	            if (!event.target.closest('[data-element="projectlink"]')) return;
 	
 	            event.preventDefault();
 	
@@ -1713,6 +1730,15 @@
 	            this._el.innerHTML = compiledTemplate({
 	                projects: projects
 	            });
+	        }
+	    }, {
+	        key: '_onBackButtonClick',
+	        value: function _onBackButtonClick(event) {
+	            if (!event.target.closest('[data-element="backButton"]')) return;
+	
+	            var customEvent = new CustomEvent('back');
+	
+	            this._el.dispatchEvent(customEvent);
 	        }
 	    }]);
 	
@@ -1752,7 +1778,7 @@
 	},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
 	    var stack1;
 	
-	  return "<button class=\"back-btn\">back</button>\r\n<ul class=\"projects\">\r\n"
+	  return "<button class=\"back-btn\" data-element=\"backButton\">back</button>\r\n<ul class=\"projects\">\r\n"
 	    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.projects : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
 	    + "</ul>";
 	},"useData":true});
@@ -1786,7 +1812,10 @@
 	    function ProjectViewer(options) {
 	        _classCallCheck(this, ProjectViewer);
 	
-	        return _possibleConstructorReturn(this, (ProjectViewer.__proto__ || Object.getPrototypeOf(ProjectViewer)).call(this, options.element));
+	        var _this = _possibleConstructorReturn(this, (ProjectViewer.__proto__ || Object.getPrototypeOf(ProjectViewer)).call(this, options.element));
+	
+	        _this._el.addEventListener('click', _this._onBackButtonClick.bind(_this));
+	        return _this;
 	    }
 	
 	    _createClass(ProjectViewer, [{
@@ -1846,6 +1875,15 @@
 	
 	            this._setNavigation();
 	        }
+	    }, {
+	        key: '_onBackButtonClick',
+	        value: function _onBackButtonClick(event) {
+	            if (!event.target.closest('[data-element="backButton"]')) return;
+	
+	            var customEvent = new CustomEvent('back');
+	
+	            this._el.dispatchEvent(customEvent);
+	        }
 	    }]);
 	
 	    return ProjectViewer;
@@ -1866,7 +1904,7 @@
 	},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
 	    var stack1, alias1=container.lambda;
 	
-	  return "<button class=\"back-btn\">back</button>\r\n<div class=\"single-project\">\r\n    <div class=\"slides\" data-element=\"slides\">\r\n        <ul class=\"carousel\" data-element=\"carousel\">\r\n"
+	  return "<button class=\"back-btn\" data-element=\"backButton\">back</button>\r\n<div class=\"single-project\">\r\n    <div class=\"slides\" data-element=\"slides\">\r\n        <ul class=\"carousel\" data-element=\"carousel\">\r\n"
 	    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},((stack1 = (depth0 != null ? depth0.project : depth0)) != null ? stack1.images : stack1),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
 	    + "        </ul>\r\n        <div class=\"navigations\" data-element=\"navigations\">\r\n            <span class=\"prev\" data-element=\"navPrev\">prev</span>\r\n            <span class=\"next\" data-element=\"navNext\">next</span>\r\n        </div>\r\n    </div>\r\n    <div class=\"row\">\r\n        <div class=\"col-lg-6 col-md-12\">\r\n            <h4>Price: <span>&euro;"
 	    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.project : depth0)) != null ? stack1.price : stack1), depth0)) != null ? stack1 : "")
